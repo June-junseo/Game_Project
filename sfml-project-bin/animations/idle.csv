@@ -1,0 +1,14 @@
+ID,FPS,"LoopType (0: Single, 1: Loop)",,,,
+Idle,10,"1",,,,
+"				",,,,,
+TEXTURE ID,LEFT,TOP,WIDTH,HEIGHT,"FLIPX (0:False, 1:True)"
+graphics/Idle.png,0,0,128,323,0
+graphics/Idle.png,128,0,128,323,0
+graphics/Idle.png,256,0,128,323,0
+graphics/Idle.png,384,0,128,323,0
+graphics/Idle.png,512,0,128,323,0
+graphics/Idle.png,640,0,128,323,0
+graphics/Idle.png,768,0,128,323,0
+graphics/Idle.png,896,0,128,323,0
+graphics/Idle.png,1024,0,128,323,0
+graphics/Idle.png,1152,0,128,323,0
