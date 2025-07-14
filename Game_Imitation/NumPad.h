@@ -1,36 +1,48 @@
 #pragma once
+#include "stdafx.h"
 
-class NumPad {
+class NumPad : public GameObject
+{
 public:
-    void Init(const sf::Vector2f& position, const sf::Vector2f& buttonSize);
-    void Draw(sf::RenderWindow& window);
-    void HandleEvent(const sf::Event& event, sf::RenderWindow& window);
-    void Update(float dt);
+    NumPad(const std::string& name = "NumPad");
 
-    void SetVisible(bool visible);
-    bool IsVisible() const;
+    void Init(const sf::Vector2f& position, const sf::Vector2f& buttonSize);
+
+    void Update(float dt) override;
+    void Draw(sf::RenderWindow& window) override;
 
     void SetPassword(const std::string& pw);
     bool IsPasswordCorrect() const;
     void ClearInput();
-    void SetOnOkPressed(std::function<void()> callback);
     const std::string& GetInput() const;
 
-private:
-    std::vector<sf::RectangleShape> buttons;
-    std::vector<std::string> labels;
-    std::vector<sf::Text> texts;
-    std::function<void()> onOkPressed;
+    void SetOnOkPressed(std::function<void()> callback);
 
-    std::string input;
+    void Init() override {}                     
+    void Release() override {}                   
+    void Reset() override { input.clear(); }     
+
+    void HandleEvent(const sf::Event& event, const sf::RenderWindow& window) override {} 
+    sf::FloatRect GetLocalBounds() const override { return sf::FloatRect(); }
+
+    sf::FloatRect GetGlobalBounds() const override {
+        if (!buttons.empty())
+            return buttons.front().getGlobalBounds(); 
+        return sf::FloatRect();
+    }
+
+private:
+    sf::Vector2f buttonSize;
+    std::vector<sf::RectangleShape> buttons;
+    std::vector<sf::Text> texts;
+    std::vector<std::string> labels;
+
     std::string password;
+    std::string input;
 
     sf::Font font;
-    bool visible = false;
-
-    sf::Vector2f position;
-    sf::Vector2f buttonSize;
-
     int pressedIndex = -1;
     sf::Clock pressClock;
+
+    std::function<void()> onOkPressed;
 };

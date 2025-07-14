@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "NumPad.h"
 
+NumPad::NumPad(const std::string& name)
+    : GameObject(name)
+{
+    active = false;
+}
+
 void NumPad::Init(const sf::Vector2f& position, const sf::Vector2f& buttonSize)
 {
     this->position = position;
@@ -25,7 +31,7 @@ void NumPad::Init(const sf::Vector2f& position, const sf::Vector2f& buttonSize)
         int col = i % 3;
         button.setPosition(position.x + col * (buttonSize.x + 10.f), position.y + row * (buttonSize.y + 10.f));
         button.setFillColor(sf::Color(255, 195, 30));
-        button.setOutlineColor(sf::Color::Black);      
+        button.setOutlineColor(sf::Color::Black);
         button.setOutlineThickness(4.f);
 
         buttons.push_back(button);
@@ -46,7 +52,7 @@ void NumPad::Init(const sf::Vector2f& position, const sf::Vector2f& buttonSize)
 
 void NumPad::Draw(sf::RenderWindow& window)
 {
-    if (!visible) return;
+    if (!active) return;
 
     for (size_t i = 0; i < buttons.size(); ++i)
     {
@@ -57,7 +63,7 @@ void NumPad::Draw(sf::RenderWindow& window)
 
 void NumPad::Update(float dt)
 {
-    if (!visible) return;
+    if (!active) return;
 
     if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
     {
@@ -80,7 +86,7 @@ void NumPad::Update(float dt)
                 else if (label == "OK")
                 {
                     if (onOkPressed)
-                        onOkPressed();// OK ¹öÆ° pressed after function
+                        onOkPressed();
                 }
                 else
                 {
@@ -99,19 +105,8 @@ void NumPad::Update(float dt)
     }
 }
 
-void NumPad::SetVisible(bool v) { visible = v; }
-
-bool NumPad::IsVisible() const { return visible; }
-
 void NumPad::SetPassword(const std::string& pw) { password = pw; }
-
 bool NumPad::IsPasswordCorrect() const { return input == password; }
-
 void NumPad::ClearInput() { input.clear(); }
-
-void NumPad::SetOnOkPressed(std::function<void()> callback)
-{
-    onOkPressed = callback;
-}
-
 const std::string& NumPad::GetInput() const { return input; }
+void NumPad::SetOnOkPressed(std::function<void()> callback) { onOkPressed = callback; }

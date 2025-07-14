@@ -1,31 +1,32 @@
 #pragma once
+#include "stdafx.h"
+#include <functional>
 
-enum class ArrowDirection
-{
-	Left,
-	Right
-};
+class ArrowButton : public GameObject, public sf::Drawable {
+private:
+    sf::ConvexShape shape;
+    std::function<void()> onClick;
 
-class ArrowButton : public sf::Drawable
-{
-public: 
-	ArrowButton(ArrowDirection direction, sf::Vector2f position, sf::Vector2f size);
+    ArrowDirection direction;
 
-	void Update();
-	void SetCallBack(std::function<void()> callback);
-	void HandleEvent(const sf::Event& event, const sf::RenderWindow& window);
-	void UpdateHoverState(const sf::RenderWindow& window);
+    sf::Color defaultColor = sf::Color::Black;
+    sf::Color hoverColor = sf::Color::White;
+    bool isHovered = false;
+
+public:
+    ArrowButton(ArrowDirection direction, const sf::Vector2f& position, const sf::Vector2f& size);
+
+    void SetCallBack(std::function<void()> callback);
+    void Update(float dt) override;
+    void HandleEvent(const sf::Event& event, const sf::RenderWindow& window) override;
+
+    void UpdateHoverState(const sf::RenderWindow& window);
+    void Draw(sf::RenderWindow& window) override;
+
+    void Init() override {}
+    void Release() override {}
+    void Reset() override {}
 
 protected:
-	sf::ConvexShape shape;
-	std::function<void()> onClick;
-
-	sf::Color defaultColor = sf::Color::Black;
-	sf::Color hoverColor = sf::Color(100, 100, 100); // È¸»öºû ¹àÀº»ö
-	bool isHovered = false;
-
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-
-
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
-

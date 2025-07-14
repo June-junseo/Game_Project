@@ -33,3 +33,8 @@ enum class Sides
 	Right,
 	None,
 };
+
+enum class ArrowDirection 
+{ 
+	Left, Right 
+};

@@ -4,8 +4,7 @@
 #include "NumPad.h"
 
 class ArrowButton;
-class Scene1 :
-    public Scene
+class Scene1 : public Scene
 {
 protected:
 
