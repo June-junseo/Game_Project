@@ -21,8 +21,10 @@ void Scene2::Init()
 	background2.setTexture(TEXTURE_MGR.Get(texId2), true);
 
 	sceneUiMgr.Init(FRAMEWORK.GetWindow(), windowSize);
-	leftArrow = new ArrowButton(ArrowDirection::Left, { 150, windowSize.y / 2 - 20 }, { 25.f, 30.f });
-	rightArrow = new ArrowButton(ArrowDirection::Right, { windowSize.x - 370, windowSize.y / 2 - 20 }, { 25.f, 30.f });
+	sceneUiMgr.CreateArrowButtons(windowSize);
+
+	ArrowButton* leftArrow = sceneUiMgr.GetLeftArrow();
+	ArrowButton* rightArrow = sceneUiMgr.GetRightArrow();
 	sceneUiMgr.AddArrowButtons(leftArrow, rightArrow);
 
 	sf::Vector2f center = windowSize * 0.5f;

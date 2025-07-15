@@ -20,17 +20,18 @@ void Scene1::Init()
 	shadowBg.setSize({ 1920, 1080 });
 	shadowBg.setFillColor(sf::Color(0, 0, 0, 150));
 
-	sf::Vector2f arrowSize(25.f, 30.f);
-	leftArrow = new ArrowButton(ArrowDirection::Left, { 150, windowSize.y / 2 - 20 }, arrowSize);
-	rightArrow = new ArrowButton(ArrowDirection::Right, { windowSize.x - 370, windowSize.y / 2 - 20 }, arrowSize);
+	sceneUiMgr.Init(FRAMEWORK.GetWindow(), windowSize);
+	sceneUiMgr.CreateArrowButtons(windowSize);
+
+	ArrowButton* leftArrow = sceneUiMgr.GetLeftArrow();
+	ArrowButton* rightArrow = sceneUiMgr.GetRightArrow();
+
+	sceneUiMgr.AddArrowButtons(leftArrow, rightArrow);
 
 	background1.setPosition(0.f, 0.f);
 	background1.setTexture(TEXTURE_MGR.Get(texId), true);
 	light.setPosition(0.f, 0.f);
 	light.setTexture(TEXTURE_MGR.Get(texId1), true);
-
-	sceneUiMgr.Init(FRAMEWORK.GetWindow(), windowSize);
-	sceneUiMgr.AddArrowButtons(leftArrow, rightArrow);
 
 	sf::FloatRect shelfArea(windowSize.x / 10.f + 165.f, windowSize.y / 2.f - 180.f, 270.f, 250.f);
 	sf::FloatRect boxArea(windowSize.x / 10.f + 750, windowSize.y / 2.f - 10.f + 130.f, 270.f, 250.f);

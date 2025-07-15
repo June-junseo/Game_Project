@@ -9,6 +9,15 @@ void SceneUiMgr::Init(sf::RenderWindow& window, sf::Vector2f windowSize)
     window.setView(uiView);
 }
 
+void SceneUiMgr::CreateArrowButtons(sf::Vector2f windowSize, sf::Vector2f size)
+{
+    if (leftArrow) delete leftArrow;
+    if (rightArrow) delete rightArrow;
+
+    leftArrow = new ArrowButton(ArrowDirection::Left, { 150, windowSize.y / 2 - 20 }, size);
+    rightArrow = new ArrowButton(ArrowDirection::Right, { windowSize.x - 370, windowSize.y / 2 - 20 }, size);
+}
+
 void SceneUiMgr::AddArrowButtons(ArrowButton* left, ArrowButton* right)
 {
     leftArrow = left;

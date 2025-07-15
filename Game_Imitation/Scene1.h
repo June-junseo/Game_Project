@@ -23,7 +23,7 @@ private:
     void SetUpViews();
 
     std::string texId = "graphics/scene1_bg.png";
-    std::string texId1 = "graphics/light.png";
+    std::string texId1 = "graphics/scene1_light.png";
     std::vector<std::string> texIds;
 
     sf::Sprite background1;
@@ -35,9 +35,6 @@ private:
     ZoomUI shelfUi;
     ZoomUI boxUi;
     ZoomUI albumUi;
-
-    ArrowButton* leftArrow = nullptr;
-    ArrowButton* rightArrow = nullptr;
 
     sf::RectangleShape shelfRect;
     sf::RectangleShape boxRect;
