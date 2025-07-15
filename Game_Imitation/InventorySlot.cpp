@@ -13,7 +13,7 @@ InventorySlot::InventorySlot(const sf::Vector2f& position, const sf::Vector2f& s
 void InventorySlot::Draw(sf::RenderWindow& window)
 {
     if (selected)
-        slotShape.setOutlineColor(sf::Color::White); //can change the color later
+        slotShape.setOutlineColor(sf::Color::White); //can change the color later maybe
     else
         slotShape.setOutlineColor(sf::Color::Black);
 
@@ -21,7 +21,12 @@ void InventorySlot::Draw(sf::RenderWindow& window)
 
     if (item)
     {
-        item->SetPosition(slotShape.getPosition() + sf::Vector2f(10.f, 50.f));
+        sf::Vector2f slotCenter = slotShape.getPosition() + slotShape.getSize() * 0.5f;
+        sf::Vector2f itemSize = item->GetGlobalBounds().getSize();
+        sf::Vector2f itemOrigin(itemSize.x * 0.5f, itemSize.y * 0.5f);
+
+        item->SetOrigin(itemOrigin); 
+        item->SetPosition(slotCenter); 
         item->Draw(window);
     }
 }

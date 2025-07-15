@@ -29,7 +29,7 @@ void Inventory::AddItem(Item* item)
             return;
         }
     }
-    std::cout << "Inventory full!\n";
+    std::cout << "Inventory full\n";
 }
 
 void Inventory::Update(const sf::Vector2f& mousePos, bool isClick)
@@ -73,6 +73,18 @@ Item* Inventory::GetSelectedItem()
     if (selectedSlot)
         return selectedSlot->GetItem();
     return nullptr;
+}
+
+void Inventory::RemoveSelectedItem()
+{
+    if (selectedSlot && !selectedSlot->IsEmpty())
+    {
+        Item* item = selectedSlot->GetItem();
+        selectedSlot->SetItem(nullptr); 
+        delete item;                    
+        selectedSlot->SetSelected(false);
+        selectedSlot = nullptr;
+    }
 }
 
 void Inventory::HandleClick(const sf::Vector2f& mousePos)

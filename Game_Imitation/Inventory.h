@@ -18,6 +18,7 @@ public:
     void Update(const sf::Vector2f& mousePos, bool isClick);
     void Draw(sf::RenderWindow& window);
     Item* GetSelectedItem();
+    void RemoveSelectedItem();
     bool HasItem(const std::string& itemName);
     void HandleClick(const sf::Vector2f& mousePos);
 };

@@ -29,4 +29,14 @@ private:
     sf::RectangleShape tvRect;
 
     SceneUiMgr sceneUiMgr;
+
+    bool isBatteryInserted = false;
+
+    std::vector<Item*> itemsInTv;
+    size_t nextItemIndex = 0;
+
+    bool isItemInTvVisible = false;
+
+    std::string itemName;
+    std::string textureName;
 };

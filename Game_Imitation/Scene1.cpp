@@ -5,6 +5,7 @@
 #include "ZoomUI.h"
 #include "Inventory.h"
 #include "SceneUiMgr.h"
+#include "SceneData.h"
 
 Scene1::Scene1() 
 	: Scene(SceneIds::Scene1)
@@ -52,17 +53,20 @@ void Scene1::Init()
 	albumUi.Init(TEXTURE_MGR.Get("graphics/album_ui.png"), center);
 	albumUi.SetClickableArea(albumArea);
 
-	leftArrow->SetCallBack([this]() {
+	leftArrow->SetCallBack([this]() 
+		{
 		if (albumUi.IsVisible()) albumUi.Hide();
 		else if (shelfUi.IsVisible()) shelfUi.Hide();
 		else if (boxUi.IsVisible()) boxUi.Hide();
 		else SCENE_MGR.ChangeScene(SceneIds::Scene2);
 		});
-	rightArrow->SetCallBack([this]() {
+	rightArrow->SetCallBack([this]() 
+		{
 		if (shelfUi.IsVisible()) shelfUi.Hide();
 		if (boxUi.IsVisible()) boxUi.Hide();
 		});
-	numPad.SetOnOkPressed([this]() {
+	numPad.SetOnOkPressed([this]() 
+		{
 		if (numPad.IsPasswordCorrect()) {
 			boxUi.ChangeTexture(TEXTURE_MGR.Get("graphics/box_open_ui.png"));
 			boxUi.SetOpened(true);
@@ -84,7 +88,15 @@ void Scene1::Enter()
 	background1.setTexture(TEXTURE_MGR.Get(texId), true);
 	light.setTexture(TEXTURE_MGR.Get(texId1), true);
 	boxUi.ChangeTexture(TEXTURE_MGR.Get(boxUi.IsOpened() ? "graphics/box_open_ui.png" : "graphics/box_ui.png")); //***
-	isBatteryVisible = boxUi.IsOpened() && !Inventory::Instance().HasItem("battery");
+
+	if (!SceneData::batteryUsed && !Inventory::Instance().HasItem("battery"))
+	{
+		isBatteryVisible = boxUi.IsOpened(); 
+	}
+	else
+	{
+		isBatteryVisible = false;
+	}
 }
 
 void Scene1::Exit()
