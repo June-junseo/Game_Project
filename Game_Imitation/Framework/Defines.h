@@ -23,6 +23,8 @@ enum class SceneIds
 	None = -1,
 	Scene1, 
 	Scene2,
+	Scene3,
+	Scene4,
 	Dev1,
 	Dev2,
 	Count,

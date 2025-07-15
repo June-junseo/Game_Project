@@ -6,7 +6,10 @@
 #include "Inventory.h"
 #include "SceneUiMgr.h"
 
-Scene1::Scene1() : Scene(SceneIds::Scene1) {}
+Scene1::Scene1() 
+	: Scene(SceneIds::Scene1)
+{
+}
 
 void Scene1::Init()
 {
@@ -80,7 +83,7 @@ void Scene1::Enter()
 	TEXTURE_MGR.Load(texIds);
 	background1.setTexture(TEXTURE_MGR.Get(texId), true);
 	light.setTexture(TEXTURE_MGR.Get(texId1), true);
-	boxUi.ChangeTexture(TEXTURE_MGR.Get(boxUi.IsOpened() ? "graphics/box_open_ui.png" : "graphics/box_ui.png"));
+	boxUi.ChangeTexture(TEXTURE_MGR.Get(boxUi.IsOpened() ? "graphics/box_open_ui.png" : "graphics/box_ui.png")); //***
 	isBatteryVisible = boxUi.IsOpened() && !Inventory::Instance().HasItem("battery");
 }
 

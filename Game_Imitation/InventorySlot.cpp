@@ -13,7 +13,7 @@ InventorySlot::InventorySlot(const sf::Vector2f& position, const sf::Vector2f& s
 void InventorySlot::Draw(sf::RenderWindow& window)
 {
     if (selected)
-        slotShape.setOutlineColor(sf::Color::Yellow);
+        slotShape.setOutlineColor(sf::Color::White); //can change the color later
     else
         slotShape.setOutlineColor(sf::Color::Black);
 

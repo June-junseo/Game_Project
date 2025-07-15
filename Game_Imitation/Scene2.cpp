@@ -6,7 +6,10 @@
 #include "Inventory.h"
 #include "SceneUiMgr.h"
 
-Scene2::Scene2() : Scene(SceneIds::Scene2) {}
+Scene2::Scene2() 
+	: Scene(SceneIds::Scene2)
+{
+}
 
 void Scene2::Init()
 {
@@ -35,8 +38,9 @@ void Scene2::Init()
 
 	leftArrow->SetCallBack([this]() {
 		if (tvUi.IsVisible()) tvUi.Hide();
+		SCENE_MGR.ChangeScene(SceneIds::Scene3);
 		});
-	rightArrow->SetCallBack([this]() {
+	rightArrow->SetCallBack([this]() { //func
 		if (tvUi.IsVisible()) tvUi.Hide();
 		SCENE_MGR.ChangeScene(SceneIds::Scene1);
 		});

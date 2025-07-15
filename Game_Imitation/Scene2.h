@@ -24,9 +24,6 @@ private:
     std::string texId2 = "graphics/scene2_bg.png";
     std::vector<std::string> texIds;
 
-    ArrowButton* leftArrow = nullptr;
-    ArrowButton* rightArrow = nullptr;
-
     sf::Sprite background2;
     ZoomUI tvUi;
     sf::RectangleShape tvRect;
