@@ -24,5 +24,9 @@ private:
     std::string texId3 = "graphics/scene3_bg.png";
     sf::Sprite background3;
 
+    std::vector<std::string> texIds;
+
     SceneUiMgr sceneUiMgr;
+
+    ZoomUI scaleUi;
 };

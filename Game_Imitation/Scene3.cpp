@@ -24,6 +24,12 @@ void Scene3::Init()
 	background3.setPosition(0.f, 0.f);
 	background3.setTexture(TEXTURE_MGR.Get(texId3), true);
 
+	sf::Vector2f center = windowSize * 0.5f;
+	sf::Vector2f scaleSize(600.f, 600.f);
+	sf::FloatRect scaleArea(center.x - scaleSize.x * 0.5 - 200, center.y - scaleSize.y * 0.5f + 150, scaleSize.x, scaleSize.y);
+	scaleUi.Init(TEXTURE_MGR.Get("graphics/scale_ui.png"), center);
+	scaleUi.SetClickableArea(scaleArea);
+
 	sceneUiMgr.Init(FRAMEWORK.GetWindow(), windowSize);
 	sceneUiMgr.CreateArrowButtons(windowSize);
 
@@ -32,9 +38,19 @@ void Scene3::Init()
 	sceneUiMgr.AddArrowButtons(leftArrow, rightArrow);
 
 	leftArrow->SetCallBack([this]() {
+		if (scaleUi.IsVisible())
+		{
+			scaleUi.Hide();
+		}
+		else
 		SCENE_MGR.ChangeScene(SceneIds::Scene4);
 		});
 	rightArrow->SetCallBack([this]() { //func
+		if (scaleUi.IsVisible())
+		{
+			scaleUi.Hide();
+		}
+		else
 		SCENE_MGR.ChangeScene(SceneIds::Scene2);
 		});
 	Scene::Init();
@@ -59,6 +75,11 @@ void Scene3::Update(float dt)
 	sceneUiMgr.Update(dt);
 	if (InputMgr::GetMouseButtonDown(sf::Mouse::Left)) {
 		sf::Vector2f mousePos = FRAMEWORK.GetWindow().mapPixelToCoords(InputMgr::GetMousePosition());
+		if (scaleUi.CheckClick(mousePos)) 
+		{
+
+			scaleUi.Show();
+		}
 		Inventory::Instance().HandleClick(mousePos);
 	}
 }
@@ -72,12 +93,13 @@ void Scene3::Draw(sf::RenderWindow& window)
 {
 	window.setView(uiView);
 	window.draw(background3);
+	scaleUi.Draw(window);
 	sceneUiMgr.Draw(window);
 }
 
 void Scene3::ResourceLoad()
 {
-	texIds.push_back("graphics/scene3_bg.png");
+	texIds = { "graphics/scene3_bg.png", "graphics/scale_ui.png"};
 }
 void Scene3::SetUpViews()
 {

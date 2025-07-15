@@ -33,7 +33,7 @@ void Scene1::Init()
 	sceneUiMgr.AddArrowButtons(leftArrow, rightArrow);
 
 	background1.setPosition(0.f, 0.f);
-	background1.setTexture(TEXTURE_MGR.Get(texId), true);
+	background1.setTexture(TEXTURE_MGR.Get(boxUi.IsOpened() ? "graphics/scene1_bg_open.png" : texId), true);
 	light.setPosition(0.f, 0.f);
 	light.setTexture(TEXTURE_MGR.Get(texId1), true);
 
@@ -72,6 +72,9 @@ void Scene1::Init()
 			boxUi.SetOpened(true);
 			numPad.SetActive(false);
 			isBatteryVisible = true;
+
+			background1.setTexture(TEXTURE_MGR.Get("graphics/scene1_bg_open.png"), true);
+
 		}
 		});
 	batterySprite.setTexture(TEXTURE_MGR.Get("graphics/battery_ui.png"));
@@ -85,7 +88,14 @@ void Scene1::Enter()
 	Scene::Enter();
 	ResourceLoad();
 	TEXTURE_MGR.Load(texIds);
-	background1.setTexture(TEXTURE_MGR.Get(texId), true);
+	if (boxUi.IsOpened())
+	{
+		background1.setTexture(TEXTURE_MGR.Get("graphics/scene1_bg_open.png"), true);
+	}
+	else
+	{
+		background1.setTexture(TEXTURE_MGR.Get(texId), true);
+	}
 	light.setTexture(TEXTURE_MGR.Get(texId1), true);
 	boxUi.ChangeTexture(TEXTURE_MGR.Get(boxUi.IsOpened() ? "graphics/box_open_ui.png" : "graphics/box_ui.png")); //***
 
@@ -169,5 +179,7 @@ void Scene1::ResourceLoad()
 		"graphics/box_ui.png", 
 		"graphics/album_ui.png", 
 		"graphics/box_open_ui.png", 
-		"graphics/battery_ui.png" };
+		"graphics/battery_ui.png",
+		"graphics/scene1_bg_open.png"
+	};
 }
