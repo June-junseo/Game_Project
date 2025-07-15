@@ -43,8 +43,8 @@ void Scene1::Init()
 	sf::FloatRect albumArea(center.x - 75.f, center.y + 30.f, 60.f, 60.f);
 	albumRect.setPosition(albumArea.left, albumArea.top);
 
-	numPad.Init(center + sf::Vector2f(-35.f, -25.f), { 50.f, 50.f });
-	numPad.SetPassword("1234");
+	numPad.Init(center + sf::Vector2f(-35.f, -25.f), { 50.f, 50.f }); 
+	numPad.SetPassword("7504");
 
 	shelfUi.Init(TEXTURE_MGR.Get("graphics/shelf_ui.png"), center);
 	shelfUi.SetClickableArea(shelfArea);
@@ -67,7 +67,8 @@ void Scene1::Init()
 		});
 	numPad.SetOnOkPressed([this]() 
 		{
-		if (numPad.IsPasswordCorrect()) {
+		if (numPad.IsPasswordCorrect()) 
+		{
 			boxUi.ChangeTexture(TEXTURE_MGR.Get("graphics/box_open_ui.png"));
 			boxUi.SetOpened(true);
 			numPad.SetActive(false);
@@ -119,11 +120,14 @@ void Scene1::Update(float dt)
 	Scene::Update(dt);
 	sceneUiMgr.Update(dt);
 	numPad.Update(dt);
-	if (InputMgr::GetMouseButtonDown(sf::Mouse::Left)) {
+	if (InputMgr::GetMouseButtonDown(sf::Mouse::Left)) 
+	{
 		sf::Vector2f mousePos = FRAMEWORK.GetWindow().mapPixelToCoords(InputMgr::GetMousePosition());
 		Inventory::Instance().HandleClick(mousePos);
-		if (boxUi.IsVisible() && boxUi.IsOpened() && isBatteryVisible && batterySprite.getGlobalBounds().contains(mousePos)) {
-			if (!Inventory::Instance().HasItem("battery")) {
+		if (boxUi.IsVisible() && boxUi.IsOpened() && isBatteryVisible && batterySprite.getGlobalBounds().contains(mousePos)) 
+		{
+			if (!Inventory::Instance().HasItem("battery")) 
+			{
 				Item* battery = new Item("battery", "graphics/battery_ui.png");
 				battery->Init();
 				Inventory::Instance().AddItem(battery);
@@ -131,11 +135,18 @@ void Scene1::Update(float dt)
 			isBatteryVisible = false;
 		}
 		if (shelfUi.IsVisible() && albumUi.CheckClick(mousePos)) albumUi.Show();
-		else if (shelfUi.CheckClick(mousePos)) { shelfUi.Show(); boxUi.Hide(); albumUi.Hide(); numPad.SetActive(false); }
-		else if (boxUi.CheckClick(mousePos)) { boxUi.Show(); shelfUi.Hide(); albumUi.Hide(); numPad.SetActive(true); }
+		else if (shelfUi.CheckClick(mousePos)) 
+		{ 
+			shelfUi.Show(); boxUi.Hide(); albumUi.Hide(); numPad.SetActive(false); 
+		}
+		else if (boxUi.CheckClick(mousePos)) 
+		{ 
+			boxUi.Show(); shelfUi.Hide(); albumUi.Hide(); numPad.SetActive(true); 
+		}
 	}
 	blinkTimer += dt;
-	if (blinkTimer >= blinkInterval) {
+	if (blinkTimer >= blinkInterval) 
+	{
 		blinkTimer = 0.f;
 		light.setColor(sf::Color(255, 255, 255, rand() % 176 + 80));
 	}

@@ -37,7 +37,8 @@ void Scene2::Init()
 	tvUi.Init(TEXTURE_MGR.Get("graphics/tv_ui.png"), center);
 	tvUi.SetClickableArea(tvArea);
 
-	leftArrow->SetCallBack([this]() {
+	leftArrow->SetCallBack([this]() 
+		{
 		if (tvUi.IsVisible()) 
 		{ 
 			tvUi.Hide();
@@ -45,7 +46,8 @@ void Scene2::Init()
 		else
 		SCENE_MGR.ChangeScene(SceneIds::Scene3);
 		});
-	rightArrow->SetCallBack([this]() { //func
+	rightArrow->SetCallBack([this]() 
+		{ 
 		if (tvUi.IsVisible())
 		{
 			tvUi.Hide();
@@ -83,17 +85,20 @@ void Scene2::Update(float dt)
 	Scene::Update(dt);
 	sceneUiMgr.Update(dt);
 
-	if (InputMgr::GetMouseButtonDown(sf::Mouse::Left)) {
+	if (InputMgr::GetMouseButtonDown(sf::Mouse::Left)) 
+	{
 
 		sf::Vector2f mousePos = FRAMEWORK.GetWindow().mapPixelToCoords(InputMgr::GetMousePosition());
 
-		if (tvUi.CheckClick(mousePos)) {
+		if (tvUi.CheckClick(mousePos)) 
+		{
 
 			tvUi.Show();
 
 			Item* selectedItem = Inventory::Instance().GetSelectedItem();
 
-			if (selectedItem && selectedItem->GetName() == "battery") {
+			if (selectedItem && selectedItem->GetName() == "battery") 
+			{
 
 				SceneData::batteryUsed = true;
 
@@ -137,10 +142,11 @@ void Scene2::Update(float dt)
 			}
 		}
 
-		if (isItemInTvVisible && nextItemIndex < itemsInTv.size()) {
+		if (isItemInTvVisible && nextItemIndex < itemsInTv.size()) 
+		{
 			Item* currentItem = itemsInTv[nextItemIndex];
-			if (currentItem && currentItem->GetGlobalBounds().contains(mousePos)) {
-
+			if (currentItem && currentItem->GetGlobalBounds().contains(mousePos)) 
+			{
 				Inventory::Instance().AddItem(currentItem);
 
 				itemsInTv[nextItemIndex] = nullptr;
@@ -168,8 +174,10 @@ void Scene2::Draw(sf::RenderWindow& window)
 	window.draw(tvRect);
 	if (tvUi.IsVisible()) tvUi.Draw(window);
 	sceneUiMgr.Draw(window);
-	if (isItemInTvVisible) {
-		for (auto& item : itemsInTv) {
+	if (isItemInTvVisible) 
+	{
+		for (auto& item : itemsInTv) 
+		{
 			if (item)
 				item->Draw(window);
 		}
@@ -178,7 +186,9 @@ void Scene2::Draw(sf::RenderWindow& window)
 
 void Scene2::ResourceLoad()
 {
-	texIds = { texId2,
+	texIds = 
+	{ 
+		texId2,
 		"graphics/tv_ui.png",
 		"graphics/tv_ui_battery.png", 
 		"graphics/item_beer.png",

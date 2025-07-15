@@ -26,6 +26,20 @@ private:
 
     std::vector<std::string> texIds;
 
+    sf::Sprite scaleStick;
+    sf::Sprite scaleLeft;
+    sf::Sprite scaleRight;
+    std::vector<Item*> leftItems;
+    std::vector<Item*> rightItems;
+
+    float leftWeight = 0.f;
+    float rightWeight = 0.f;
+
+    bool puzzleSolved = false;
+
+    void AddItemToScale(Item* item, bool toLeft);
+    void CheckPuzzleSolved();
+
     SceneUiMgr sceneUiMgr;
 
     ZoomUI scaleUi;

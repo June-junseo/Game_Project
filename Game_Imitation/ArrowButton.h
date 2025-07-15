@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include <functional>
 
-class ArrowButton : public GameObject, public sf::Drawable {
+class ArrowButton : public GameObject {
 private:
 
     sf::ConvexShape shape;
@@ -28,6 +28,4 @@ public:
     void Release() override {}
     void Reset() override {}
 
-protected:
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };

@@ -32,11 +32,13 @@ void Scene4::Init()
 	ArrowButton* rightArrow = sceneUiMgr.GetRightArrow();
 	sceneUiMgr.AddArrowButtons(leftArrow, rightArrow);
 
-	leftArrow->SetCallBack([this]() {
-		});
-	rightArrow->SetCallBack([this]() { //func
+	leftArrow->SetCallBack([this]() 
+	{
+	});
+	rightArrow->SetCallBack([this]() 
+	{
 		SCENE_MGR.ChangeScene(SceneIds::Scene3);
-		});
+	});
 	Scene::Init();
 }
 
@@ -57,7 +59,8 @@ void Scene4::Update(float dt)
 {
 	Scene::Update(dt);
 	sceneUiMgr.Update(dt);
-	if (InputMgr::GetMouseButtonDown(sf::Mouse::Left)) {
+	if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
+	{
 		sf::Vector2f mousePos = FRAMEWORK.GetWindow().mapPixelToCoords(InputMgr::GetMousePosition());
 		Inventory::Instance().HandleClick(mousePos);
 	}

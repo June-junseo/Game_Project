@@ -65,8 +65,3 @@ void ArrowButton::Draw(sf::RenderWindow& window)
     shape.setPosition(position);
     window.draw(shape);
 }
-
-void ArrowButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
-{
-    target.draw(shape, states);
-}

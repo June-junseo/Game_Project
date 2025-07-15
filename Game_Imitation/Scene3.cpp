@@ -37,22 +37,32 @@ void Scene3::Init()
 	ArrowButton* rightArrow = sceneUiMgr.GetRightArrow();
 	sceneUiMgr.AddArrowButtons(leftArrow, rightArrow);
 
-	leftArrow->SetCallBack([this]() {
+	scaleStick.setTexture(TEXTURE_MGR.Get("graphics/scale_stick.png"));
+    scaleLeft.setTexture(TEXTURE_MGR.Get("graphics/scale_left.png"));
+    scaleRight.setTexture(TEXTURE_MGR.Get("graphics/scale_right.png"));
+
+    scaleStick.setPosition(center.x - 20.f, center.y - 100.f);
+    scaleLeft.setPosition(center.x - 200.f, center.y);
+    scaleRight.setPosition(center.x + 150.f, center.y);
+
+	leftArrow->SetCallBack([this]() 
+	{
 		if (scaleUi.IsVisible())
 		{
 			scaleUi.Hide();
 		}
 		else
 		SCENE_MGR.ChangeScene(SceneIds::Scene4);
-		});
-	rightArrow->SetCallBack([this]() { //func
+	});
+	rightArrow->SetCallBack([this]() 
+	{ 
 		if (scaleUi.IsVisible())
 		{
 			scaleUi.Hide();
 		}
 		else
 		SCENE_MGR.ChangeScene(SceneIds::Scene2);
-		});
+	});
 	Scene::Init();
 }
 
@@ -73,14 +83,59 @@ void Scene3::Update(float dt)
 {
 	Scene::Update(dt);
 	sceneUiMgr.Update(dt);
-	if (InputMgr::GetMouseButtonDown(sf::Mouse::Left)) {
-		sf::Vector2f mousePos = FRAMEWORK.GetWindow().mapPixelToCoords(InputMgr::GetMousePosition());
-		if (scaleUi.CheckClick(mousePos)) 
-		{
 
-			scaleUi.Show();
+	if (InputMgr::GetMouseButtonDown(sf::Mouse::Left)) 
+	{
+		sf::Vector2f mousePos = FRAMEWORK.GetWindow().mapPixelToCoords(InputMgr::GetMousePosition());
+
+		Item* selectedItem = Inventory::Instance().GetSelectedItem();
+		if (selectedItem) 
+		{
+			if (scaleLeft.getGlobalBounds().contains(mousePos)) 
+			{
+				AddItemToScale(selectedItem, true);
+				Inventory::Instance().RemoveSelectedItem();
+			}
+			else if (scaleRight.getGlobalBounds().contains(mousePos)) 
+			{
+				AddItemToScale(selectedItem, false);
+				Inventory::Instance().RemoveSelectedItem();
+			}
 		}
+
 		Inventory::Instance().HandleClick(mousePos);
+	}
+}
+
+void Scene3::AddItemToScale(Item* item, bool toLeft)
+{
+	float weight = 0.f;
+
+	if (item->GetName() == "beer") weight = 2.0f;
+	else if (item->GetName() == "clock") weight = 3.5f;
+	else if (item->GetName() == "drug") weight = 1.5f;
+	else if (item->GetName() == "phone") weight = 3.0f;
+
+	if (toLeft) 
+	{
+		leftItems.push_back(item);
+		leftWeight += weight;
+	}
+	else 
+	{
+		rightItems.push_back(item);
+		rightWeight += weight;
+	}
+
+	CheckPuzzleSolved();
+}
+
+void Scene3::CheckPuzzleSolved()
+{
+	if (abs(leftWeight - rightWeight) < 0.01f && !puzzleSolved) 
+	{
+		puzzleSolved = true;
+		std::cout << "ÆÛÁñ Å¬¸®¾î!" << std::endl;
 	}
 }
 
@@ -94,12 +149,31 @@ void Scene3::Draw(sf::RenderWindow& window)
 	window.setView(uiView);
 	window.draw(background3);
 	scaleUi.Draw(window);
+
+	window.draw(scaleStick);
+	window.draw(scaleLeft);
+	window.draw(scaleRight);
+
+	//items
+	for (auto& item : leftItems)
+		if (item) item->Draw(window);
+
+	for (auto& item : rightItems)
+		if (item) item->Draw(window);
+
 	sceneUiMgr.Draw(window);
 }
 
 void Scene3::ResourceLoad()
 {
-	texIds = { "graphics/scene3_bg.png", "graphics/scale_ui.png"};
+	texIds = 
+	{ 
+		"graphics/scene3_bg.png", 
+		"graphics/scale_ui.png",
+		"graphics/scale_stick.png",
+		"graphics/scale_left.png",
+		"graphics/scale_right.png",
+	};
 }
 void Scene3::SetUpViews()
 {
