@@ -1,218 +1,142 @@
 #include "stdafx.h"
 #include "Scene1.h"
+#include "Scene2.h"
 #include "ArrowButton.h"
 #include "ZoomUI.h"
+#include "Inventory.h"
+#include "SceneUiMgr.h"
 
-Scene1::Scene1()
-	: Scene(SceneIds::Scene1)
-{
-}
+Scene1::Scene1() : Scene(SceneIds::Scene1) {}
 
 void Scene1::Init()
 {
+	Inventory::Instance().Init();
+	ResourceLoad();
+	TEXTURE_MGR.Load(texIds);
 	sf::Vector2f windowSize = FRAMEWORK.GetWindowSizeF();
-	sf::Vector2f size(25.f, 30.f);
-
-	numPad.SetActive(false);
+	uiView.setSize(windowSize);
+	uiView.setCenter(windowSize * 0.5f);
 
 	shadowBg.setSize({ 1920, 1080 });
 	shadowBg.setFillColor(sf::Color(0, 0, 0, 150));
 
-	leftArrow = new ArrowButton(ArrowDirection::Left, { 150, windowSize.y / 2 - 20 }, size);
-	rightArrow = new ArrowButton(ArrowDirection::Right, { windowSize.x - 370, windowSize.y / 2 - 20 }, size);
+	sf::Vector2f arrowSize(25.f, 30.f);
+	leftArrow = new ArrowButton(ArrowDirection::Left, { 150, windowSize.y / 2 - 20 }, arrowSize);
+	rightArrow = new ArrowButton(ArrowDirection::Right, { windowSize.x - 370, windowSize.y / 2 - 20 }, arrowSize);
 
-	// Resource loading
-	ResourceLoad();
-	TEXTURE_MGR.Load(texIds);
-
-	// Background setting
 	background1.setPosition(0.f, 0.f);
 	background1.setTexture(TEXTURE_MGR.Get(texId), true);
-
-	// Light setup
 	light.setPosition(0.f, 0.f);
 	light.setTexture(TEXTURE_MGR.Get(texId1), true);
 
-	// View setup
-	SetUpViews();
+	sceneUiMgr.Init(FRAMEWORK.GetWindow(), windowSize);
+	sceneUiMgr.AddArrowButtons(leftArrow, rightArrow);
 
-	// Define clickable areas
-	sf::FloatRect shelfClickableArea(windowSize.x / 10.f + 165.f, windowSize.y / 2.f - 180.f, 270.f, 250.f);
-	sf::FloatRect boxClickableArea(windowSize.x / 10.f + 750, windowSize.y / 2.f - 10.f + 130.f, 270.f, 250.f);
+	sf::FloatRect shelfArea(windowSize.x / 10.f + 165.f, windowSize.y / 2.f - 180.f, 270.f, 250.f);
+	sf::FloatRect boxArea(windowSize.x / 10.f + 750, windowSize.y / 2.f - 10.f + 130.f, 270.f, 250.f);
+	sf::Vector2f center = uiView.getCenter();
+	sf::FloatRect albumArea(center.x - 75.f, center.y + 30.f, 60.f, 60.f);
+	albumRect.setPosition(albumArea.left, albumArea.top);
 
-	sf::Vector2f shelfCenter = uiView.getCenter();
-	sf::FloatRect albumClickableArea(shelfCenter.x - 75.f, shelfCenter.y + 30.f, 60.f, 60.f);
-	albumRect.setPosition(albumClickableArea.left, albumClickableArea.top);
-
-	sf::Vector2f numPadPos = uiView.getCenter() + sf::Vector2f(-35.f, -25.f);
-	numPad.Init(numPadPos, { 50.f, 50.f });
+	numPad.Init(center + sf::Vector2f(-35.f, -25.f), { 50.f, 50.f });
 	numPad.SetPassword("1234");
 
-	// Load textures for UI elements
-	sf::Texture& shelfTex = TEXTURE_MGR.Get("graphics/shelf_ui.png");
-	sf::Texture& boxTex = TEXTURE_MGR.Get("graphics/box_ui.png");
-	sf::Texture& albumTex = TEXTURE_MGR.Get("graphics/album_ui.png");
+	shelfUi.Init(TEXTURE_MGR.Get("graphics/shelf_ui.png"), center);
+	shelfUi.SetClickableArea(shelfArea);
+	boxUi.Init(TEXTURE_MGR.Get("graphics/box_ui.png"), center);
+	boxUi.SetClickableArea(boxArea);
+	albumUi.Init(TEXTURE_MGR.Get("graphics/album_ui.png"), center);
+	albumUi.SetClickableArea(albumArea);
 
-	// Initialize UI elements
-	shelfUi.Init(shelfTex, uiView.getCenter());
-	shelfUi.SetClickableArea(shelfClickableArea);
-
-	boxUi.Init(boxTex, uiView.getCenter());
-	boxUi.SetClickableArea(boxClickableArea);
-
-	albumUi.Init(albumTex, uiView.getCenter());
-	albumUi.SetClickableArea(albumClickableArea);
-
-	// Setup debug rectangles for clickable areas
-	shelfRect.setSize({ 270.f, 250.f });
-	shelfRect.setPosition(shelfClickableArea.left, shelfClickableArea.top);
-	shelfRect.setFillColor(sf::Color(255, 0, 0, 100));
-	shelfRect.setOutlineThickness(3.f);
-	shelfRect.setOutlineColor(sf::Color::Red);
-
-	boxRect.setSize({ 340.f, 250.f });
-	boxRect.setPosition(boxClickableArea.left, boxClickableArea.top);
-	boxRect.setFillColor(sf::Color(255, 0, 0, 100));  // 300 is invalid; changed to 255 max
-	boxRect.setOutlineThickness(3.f);
-	boxRect.setOutlineColor(sf::Color::Green);
-
-	albumRect.setSize({ 90.f, 200.f });
-	albumRect.setPosition(albumClickableArea.left, albumClickableArea.top);
-	albumRect.setFillColor(sf::Color(0, 0, 255, 100));  // Blue translucent
-	albumRect.setOutlineThickness(3.f);
-	albumRect.setOutlineColor(sf::Color::Blue);
-
-	// ArrowButton callbacks
 	leftArrow->SetCallBack([this]() {
-		if (albumUi.IsVisible())
-			albumUi.Hide();
-		else if (shelfUi.IsVisible())
-			shelfUi.Hide();
-		else if (boxUi.IsVisible())
-			boxUi.Hide();
-		else
-			SCENE_MGR.ChangeScene(SceneIds::Dev2);
+		if (albumUi.IsVisible()) albumUi.Hide();
+		else if (shelfUi.IsVisible()) shelfUi.Hide();
+		else if (boxUi.IsVisible()) boxUi.Hide();
+		else SCENE_MGR.ChangeScene(SceneIds::Scene2);
 		});
-
 	rightArrow->SetCallBack([this]() {
-		if (shelfUi.IsVisible())
-			shelfUi.Hide();
-		if (boxUi.IsVisible())
-			boxUi.Hide();
-		else
-		{
-			// TODO: next scene logic
-		}
+		if (shelfUi.IsVisible()) shelfUi.Hide();
+		if (boxUi.IsVisible()) boxUi.Hide();
 		});
-
 	numPad.SetOnOkPressed([this]() {
-		if (numPad.IsPasswordCorrect())
-		{
-			std::cout << "[Scene1] Correct password!\n";
-			sf::Texture& openedBoxTex = TEXTURE_MGR.Get("graphics/box_open_ui.png");
-			boxUi.ChangeTexture(openedBoxTex);
+		if (numPad.IsPasswordCorrect()) {
+			boxUi.ChangeTexture(TEXTURE_MGR.Get("graphics/box_open_ui.png"));
 			boxUi.SetOpened(true);
 			numPad.SetActive(false);
+			isBatteryVisible = true;
 		}
 		});
-
+	batterySprite.setTexture(TEXTURE_MGR.Get("graphics/battery_ui.png"));
+	batterySprite.setPosition(boxUi.GetPosition() + sf::Vector2f(800.f, 650.f));
+	batterySprite.setScale(0.5f, 0.5f);
 	Scene::Init();
 }
 
 void Scene1::Enter()
 {
 	Scene::Enter();
-	SetUpViews();
+	ResourceLoad();
+	TEXTURE_MGR.Load(texIds);
+	background1.setTexture(TEXTURE_MGR.Get(texId), true);
+	light.setTexture(TEXTURE_MGR.Get(texId1), true);
+	boxUi.ChangeTexture(TEXTURE_MGR.Get(boxUi.IsOpened() ? "graphics/box_open_ui.png" : "graphics/box_ui.png"));
+	isBatteryVisible = boxUi.IsOpened() && !Inventory::Instance().HasItem("battery");
 }
 
 void Scene1::Exit()
 {
 	Scene::Exit();
-
-	delete leftArrow;
-	leftArrow = nullptr;
-
-	delete rightArrow;
-	rightArrow = nullptr;
 }
 
 void Scene1::Update(float dt)
 {
 	Scene::Update(dt);
-	InputMgr::Update(dt);
+	sceneUiMgr.Update(dt);
 	numPad.Update(dt);
-
-	if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
-	{
-		sf::Vector2f mousePosF = FRAMEWORK.GetWindow().mapPixelToCoords(InputMgr::GetMousePosition());
-
-		if (albumUi.IsVisible())
-		{
-			// Handle clicks when album UI is visible (currently empty)
+	if (InputMgr::GetMouseButtonDown(sf::Mouse::Left)) {
+		sf::Vector2f mousePos = FRAMEWORK.GetWindow().mapPixelToCoords(InputMgr::GetMousePosition());
+		Inventory::Instance().HandleClick(mousePos);
+		if (boxUi.IsVisible() && boxUi.IsOpened() && isBatteryVisible && batterySprite.getGlobalBounds().contains(mousePos)) {
+			if (!Inventory::Instance().HasItem("battery")) {
+				Item* battery = new Item("battery", "graphics/battery_ui.png");
+				battery->Init();
+				Inventory::Instance().AddItem(battery);
+			}
+			isBatteryVisible = false;
 		}
-		else if (shelfUi.IsVisible())
-		{
-			if (albumUi.CheckClick(mousePosF))
-			{
-				albumUi.Show();
-				std::cout << "albumUi clicked\n";
-			}
-			else if (shelfUi.CheckClick(mousePosF))
-			{
-				std::cout << "이미 shelfUi 열려있음\n";
-			}
-		}
-		else
-		{
-			if (shelfUi.CheckClick(mousePosF))
-			{
-				shelfUi.Show();
-				boxUi.Hide();
-				albumUi.Hide();
-				numPad.SetActive(false);
-				std::cout << "shelfUi clicked\n";
-			}
-			if (boxUi.CheckClick(mousePosF))
-			{
-				boxUi.Show();
-				shelfUi.Hide();
-				albumUi.Hide();
-				numPad.SetActive(true);
-				std::cout << "boxUi clicked\n";
-			}
-		}
+		if (shelfUi.IsVisible() && albumUi.CheckClick(mousePos)) albumUi.Show();
+		else if (shelfUi.CheckClick(mousePos)) { shelfUi.Show(); boxUi.Hide(); albumUi.Hide(); numPad.SetActive(false); }
+		else if (boxUi.CheckClick(mousePos)) { boxUi.Show(); shelfUi.Hide(); albumUi.Hide(); numPad.SetActive(true); }
 	}
-
-	// Update arrows if exist
-	if (leftArrow) leftArrow->Update(dt);
-	if (rightArrow) rightArrow->Update(dt);
-
-	// Lighting effect (blink)
 	blinkTimer += dt;
-	if (blinkTimer >= blinkInterval)
-	{
+	if (blinkTimer >= blinkInterval) {
 		blinkTimer = 0.f;
-		int alpha = rand() % 176 + 80; // alpha range: 80~255
-		light.setColor(sf::Color(255, 255, 255, alpha));
+		light.setColor(sf::Color(255, 255, 255, rand() % 176 + 80));
 	}
 }
 
-void Scene1::ResourceLoad()
+void Scene1::HandleEvent(const sf::Event& event)
 {
-	texIds.push_back(texId);
-	texIds.push_back(texId1);
-	texIds.push_back("graphics/shelf_ui.png");
-	texIds.push_back("graphics/box_ui.png");
-	texIds.push_back("graphics/album_ui.png");
-	texIds.push_back("graphics/box_open_ui.png");
+	sceneUiMgr.HandleEvent(event, FRAMEWORK.GetWindow());
+}
+
+void Scene1::Draw(sf::RenderWindow& window)
+{
+	window.setView(uiView);
+	window.draw(background1);
+	window.draw(light);
+	shelfUi.Draw(window, &albumRect);
+	if (albumUi.IsVisible()) window.draw(shadowBg);
+	albumUi.Draw(window);
+	boxUi.Draw(window);
+	if (boxUi.IsVisible() && !boxUi.IsOpened() && numPad.GetActive()) numPad.Draw(window);
+	if (isBatteryVisible) window.draw(batterySprite);
+	sceneUiMgr.Draw(window);
 }
 
 void Scene1::SetUpViews()
 {
 	sf::Vector2f windowSize = FRAMEWORK.GetWindowSizeF();
-
-	ResourceLoad();
-	TEXTURE_MGR.Load(texIds);
 
 	background1.setTexture(TEXTURE_MGR.Get(texId), true);
 
@@ -220,41 +144,14 @@ void Scene1::SetUpViews()
 	uiView.setCenter(windowSize * 0.5f);
 }
 
-void Scene1::HandleEvent(const sf::Event& event)
+void Scene1::ResourceLoad()
 {
-	std::cout << "[Scene1] HandleEvent called, event type: " << event.type << std::endl;
-
-	InputMgr::UpdateEvent(event);
-	FRAMEWORK.GetWindow().setView(uiView);
-
-	if (leftArrow)
-		leftArrow->HandleEvent(event, FRAMEWORK.GetWindow());
-
-	if (rightArrow)
-		rightArrow->HandleEvent(event, FRAMEWORK.GetWindow());
-}
-
-void Scene1::Draw(sf::RenderWindow& window)
-{
-	window.setView(uiView);
-
-	window.draw(background1);
-	window.draw(light);
-
-	window.draw(shelfRect);
-	window.draw(boxRect);
-
-	shelfUi.Draw(window, &albumRect);
-
-	if (albumUi.IsVisible())
-		window.draw(shadowBg);
-
-	albumUi.Draw(window);
-	boxUi.Draw(window);
-
-	if (boxUi.IsVisible() && !boxUi.IsOpened() && numPad.GetActive())
-		numPad.Draw(window);
-
-	if (leftArrow) leftArrow->Draw(window);
-	if (rightArrow) rightArrow->Draw(window);
+	texIds = { 
+		texId, 
+		texId1, 
+		"graphics/shelf_ui.png", 
+		"graphics/box_ui.png", 
+		"graphics/album_ui.png", 
+		"graphics/box_open_ui.png", 
+		"graphics/battery_ui.png" };
 }

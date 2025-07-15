@@ -4,6 +4,7 @@
 
 class ArrowButton : public GameObject, public sf::Drawable {
 private:
+
     sf::ConvexShape shape;
     std::function<void()> onClick;
 
