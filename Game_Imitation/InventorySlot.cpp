@@ -21,12 +21,7 @@ void InventorySlot::Draw(sf::RenderWindow& window)
 
     if (item)
     {
-        sf::Vector2f slotCenter = slotShape.getPosition() + slotShape.getSize() * 0.5f;
-        sf::Vector2f itemSize = item->GetGlobalBounds().getSize();
-        sf::Vector2f itemOrigin(itemSize.x * 0.5f, itemSize.y * 0.5f);
-
-        item->SetOrigin(itemOrigin); 
-        item->SetPosition(slotCenter); 
+        item->SetPosition(slotShape.getPosition() + sf::Vector2f(10.f, 20.f));
         item->Draw(window);
     }
 }
