@@ -32,6 +32,11 @@ private:
     std::vector<Item*> leftItems;
     std::vector<Item*> rightItems;
 
+    sf::RectangleShape leftDebugRect;
+    sf::RectangleShape rightDebugRect;
+
+    sf::RectangleShape shadowBg;
+
     float leftWeight = 0.f;
     float rightWeight = 0.f;
 
@@ -40,7 +45,29 @@ private:
     void AddItemToScale(Item* item, bool toLeft);
     void CheckPuzzleSolved();
 
+    bool isScaleActive = false;
+
+    sf::Sprite keySprite;
+
     SceneUiMgr sceneUiMgr;
 
     ZoomUI scaleUi;
+    sf::RectangleShape scaleRect;
+
+    sf::FloatRect leftScaleRect;
+    sf::FloatRect rightScaleRect;
+
+    //scale animaton
+    float stickTargetRotation = 0.f;
+    float stickCurrentRotation = 0.f;
+
+    float leftTargetOffsetY = 0.f;
+    float leftCurrentOffsetY = 0.f;
+
+    float rightTargetOffsetY = 0.f;
+    float rightCurrentOffsetY = 0.f;
+
+    bool isKeyCollected = false;
+    bool isKeyVisible = false;
+
 };

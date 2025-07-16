@@ -80,8 +80,7 @@ void Inventory::RemoveSelectedItem()
     if (selectedSlot && !selectedSlot->IsEmpty())
     {
         Item* item = selectedSlot->GetItem();
-        selectedSlot->SetItem(nullptr); 
-        delete item;                    
+        selectedSlot->SetItem(nullptr);                    
         selectedSlot->SetSelected(false);
         selectedSlot = nullptr;
     }

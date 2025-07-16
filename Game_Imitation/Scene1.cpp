@@ -163,11 +163,20 @@ void Scene1::Draw(sf::RenderWindow& window)
 	window.draw(background1);
 	window.draw(light);
 	shelfUi.Draw(window, &albumRect);
-	if (albumUi.IsVisible()) window.draw(shadowBg);
+	if (albumUi.IsVisible())
+	{
+		window.draw(shadowBg);
+	}
 	albumUi.Draw(window);
 	boxUi.Draw(window);
-	if (boxUi.IsVisible() && !boxUi.IsOpened() && numPad.GetActive()) numPad.Draw(window);
-	if (isBatteryVisible) window.draw(batterySprite);
+	if (boxUi.IsVisible() && !boxUi.IsOpened() && numPad.GetActive())
+	{
+		numPad.Draw(window);
+	}
+	if (isBatteryVisible)
+	{
+		window.draw(batterySprite);
+	}
 	sceneUiMgr.Draw(window);
 }
 
