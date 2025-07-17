@@ -256,7 +256,7 @@ void Scene3::Draw(sf::RenderWindow& window)
 			{
 				float baseX = scaleLeft.getPosition().x + 50.f;
 				float baseY = scaleLeft.getPosition().y - 100.f;
-				leftItems[i]->SetPosition({ baseX, baseY - static_cast<float>(i) * 30.f });
+				leftItems[i]->SetPosition({ baseX + static_cast<float>(i) * 60.f, baseY });
 				leftItems[i]->Draw(window);
 			}
 		}
@@ -267,7 +267,7 @@ void Scene3::Draw(sf::RenderWindow& window)
 			{
 				float baseX = scaleRight.getPosition().x + 50.f;
 				float baseY = scaleRight.getPosition().y - 100.f;
-				rightItems[i]->SetPosition({ baseX, baseY - static_cast<float>(i) * 30.f });
+				rightItems[i]->SetPosition({ baseX + static_cast<float>(i) * 60.f, baseY });
 				rightItems[i]->Draw(window);
 			}
 		}

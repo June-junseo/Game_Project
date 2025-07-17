@@ -11,7 +11,7 @@ void Framework::Init(int w, int h, const std::string& t)
 
     Utils::Init();
 	InputMgr::Init();
-    //SOUND_MGR.Init();
+    SOUND_MGR.Init();
 	SCENE_MGR.Init();
 }
 //

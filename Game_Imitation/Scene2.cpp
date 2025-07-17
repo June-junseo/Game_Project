@@ -116,7 +116,7 @@ void Scene2::Update(float dt)
 				sf::Vector2f itemSize(50.f, 50.f);
 				std::string labelText;
 
-				for (int i = 0; i < 5; ++i) {
+				for (int i = 0; i < 7; ++i) {
 					switch (i) {
 					case 0:
 						itemName = "phone";
@@ -141,7 +141,7 @@ void Scene2::Update(float dt)
 					case 4:
 						itemName = "";
 						textureName = "";
-						labelText = "Find balance of your life!";
+						labelText = "Find your JUSTICE";
 						break;
 					}
 
