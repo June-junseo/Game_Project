@@ -22,6 +22,10 @@ private:
     void ResourceLoad();
     void SetUpViews();
 
+    bool isDoorOpened = false;  
+    bool isKeyUsed = false;       
+    sf::Sprite openDoorSprite;
+
     std::string texId4 = "graphics/scene4_bg.png";
     sf::Sprite background4;
 

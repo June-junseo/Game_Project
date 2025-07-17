@@ -21,4 +21,5 @@ public:
     void RemoveSelectedItem();
     bool HasItem(const std::string& itemName);
     void HandleClick(const sf::Vector2f& mousePos);
+    int GetTotalItemsCount() const;
 };

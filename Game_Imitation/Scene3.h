@@ -47,6 +47,12 @@ private:
 
     bool isScaleActive = false;
 
+    bool isResetPending = false; 
+    float resetTimer = 0.f;      
+    const float resetDelay = 1.5f; 
+
+    int scaleItems = 4;
+
     sf::Sprite keySprite;
 
     SceneUiMgr sceneUiMgr;

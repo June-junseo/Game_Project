@@ -186,22 +186,35 @@ void Scene3::AddItemToScale(Item* item, bool toLeft)
 
 void Scene3::CheckPuzzleSolved()
 {
-	if (abs(leftWeight - rightWeight) < 0.01f && !puzzleSolved)
-	{
-		puzzleSolved = true;
-		std::cout << "clear!" << std::endl;
-	}
-
 	float diff = rightWeight - leftWeight;
+
 	stickTargetRotation = Utils::Clamp(diff * 3.f, -10.f, 10.f);
 	leftTargetOffsetY = Utils::Clamp(diff * -70.f, -30.f, 70.f);
 	rightTargetOffsetY = Utils::Clamp(diff * 70.f, -30.f, 70.f);
+
+	if (std::abs(leftWeight - rightWeight) < 0.01f && !puzzleSolved)
+	{
+		puzzleSolved = true;
+		isResetPending = false;   
+		resetTimer = 0.f;
+		std::cout << "clear!" << std::endl;
+	}
+	else if (!puzzleSolved)
+	{
+		if (!isResetPending)
+		{
+			isResetPending = true;
+			resetTimer = 0.f;
+			std::cout << "Not matched, reset scheduled..." << std::endl;
+		}
+	}
 }
 
 void Scene3::HandleEvent(const sf::Event& event)
 {
 	sceneUiMgr.HandleEvent(event, FRAMEWORK.GetWindow());
 }
+
 
 void Scene3::Draw(sf::RenderWindow& window)
 {

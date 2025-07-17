@@ -87,7 +87,7 @@ public:
 		}
 		return *(it->second);
 	}
-	
+
 	bool Exists(const std::string& id) const
 	{
 		return resources.find(id) != resources.end();

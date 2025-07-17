@@ -90,3 +90,14 @@ void Inventory::HandleClick(const sf::Vector2f& mousePos)
 {
     Update(mousePos, true);
 }
+
+int Inventory::GetTotalItemsCount() const
+{
+    int count = 0;
+    for (const auto& slot : slots)
+    {
+        if (!slot.IsEmpty())
+            ++count;
+    }
+    return count;
+}

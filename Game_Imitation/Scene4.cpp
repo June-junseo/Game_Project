@@ -25,6 +25,9 @@ void Scene4::Init()
 	background4.setPosition(0.f, 0.f);
 	background4.setTexture(TEXTURE_MGR.Get(texId4), true);
 
+	openDoorSprite.setTexture(TEXTURE_MGR.Get("graphics/scene4_door_open.png"));
+	openDoorSprite.setPosition(0.f, 0.f);
+
 	sceneUiMgr.Init(FRAMEWORK.GetWindow(), windowSize);
 	sceneUiMgr.CreateArrowButtons(windowSize);
 
@@ -59,9 +62,27 @@ void Scene4::Update(float dt)
 {
 	Scene::Update(dt);
 	sceneUiMgr.Update(dt);
+
 	if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
 	{
 		sf::Vector2f mousePos = FRAMEWORK.GetWindow().mapPixelToCoords(InputMgr::GetMousePosition());
+
+		if (!isDoorOpened)
+		{
+			sf::FloatRect doorArea(uiView.getCenter().x - 350.f, uiView.getCenter().y - 300.f, 400.f, 700.f);
+
+			if (doorArea.contains(mousePos))
+			{
+				Item* selectedItem = Inventory::Instance().GetSelectedItem();
+				if (selectedItem && selectedItem->GetName() == "key")
+				{
+					isDoorOpened = true;
+					isKeyUsed = true;
+					Inventory::Instance().RemoveSelectedItem();
+					std::cout << "door open." << std::endl;
+				}
+			}
+		}
 		Inventory::Instance().HandleClick(mousePos);
 	}
 }
@@ -71,16 +92,27 @@ void Scene4::HandleEvent(const sf::Event& event)
 	sceneUiMgr.HandleEvent(event, FRAMEWORK.GetWindow());
 }
 
+
 void Scene4::Draw(sf::RenderWindow& window)
 {
 	window.setView(uiView);
-	window.draw(background4);
+
+	if (isDoorOpened && isKeyUsed)
+	{
+		window.draw(openDoorSprite);
+	}
+	else
+	{
+		window.draw(background4);
+	}
+
 	sceneUiMgr.Draw(window);
 }
 
 void Scene4::ResourceLoad()
 {
 	texIds.push_back("graphics/scene4_bg.png");
+	texIds.push_back("graphics/scene4_door_open.png");
 }
 void Scene4::SetUpViews()
 {
