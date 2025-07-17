@@ -86,6 +86,17 @@ void Scene3::Update(float dt)
 	Scene::Update(dt);
 	sceneUiMgr.Update(dt);
 
+	if (isResetPending && !puzzleSolved)
+	{
+		resetTimer += dt;
+		if (resetTimer >= 1.0f)
+		{
+			ScaleReset();
+			isResetPending = false;
+			resetTimer = 0.f;
+		}
+	}
+
 	sf::Vector2f mousePos = FRAMEWORK.GetWindow().mapPixelToCoords(InputMgr::GetMousePosition(), uiView);
 
 	if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
@@ -145,7 +156,6 @@ void Scene3::Update(float dt)
 				isKeyCollected = true;
 			}
 		}
-
 		Inventory::Instance().HandleClick(mousePos);
 	}
 
@@ -161,12 +171,17 @@ void Scene3::Update(float dt)
 
 void Scene3::AddItemToScale(Item* item, bool toLeft)
 {
+
+	Item* selectedItemBeforeRemove = Inventory::Instance().GetSelectedItem();
+
+	Inventory::Instance().RemoveSelectedItem();
+
 	float weight = 0.f;
 
-	if (item->GetName() == "beer") weight = 2.0f;
+	if (item->GetName() == "beer") weight = 1.0f;
 	else if (item->GetName() == "clock") weight = 3.5f;
 	else if (item->GetName() == "drug") weight = 1.5f;
-	else if (item->GetName() == "phone") weight = 3.0f;
+	else if (item->GetName() == "phone") weight = 4.0f;
 
 	if (toLeft)
 	{
@@ -180,7 +195,6 @@ void Scene3::AddItemToScale(Item* item, bool toLeft)
 		rightWeight += weight;
 		rightTargetOffsetY = Utils::Clamp(15.f * rightItems.size(), -30.f, 30.f);
 	}
-
 	CheckPuzzleSolved();
 }
 
@@ -201,11 +215,11 @@ void Scene3::CheckPuzzleSolved()
 	}
 	else if (!puzzleSolved)
 	{
-		if (!isResetPending)
+		if (Inventory::Instance().GetTotalItemsCount() == 0 && !isResetPending)
 		{
 			isResetPending = true;
 			resetTimer = 0.f;
-			std::cout << "Not matched, reset scheduled..." << std::endl;
+			
 		}
 	}
 }
@@ -271,6 +285,33 @@ void Scene3::SetUpViews()
 	background3.setTexture(TEXTURE_MGR.Get(texId3), true);
 	uiView.setSize(windowSize);
 	uiView.setCenter(windowSize * 0.5f);
+}
+
+void Scene3::ScaleReset()
+{
+	for (Item* item : leftItems)
+	{
+		if (item)
+		{
+			Inventory::Instance().AddItem(item);
+		}
+	}
+	for (Item* item : rightItems)
+	{
+		if (item)
+		{
+			Inventory::Instance().AddItem(item);
+		}
+	}
+
+	leftItems.clear();
+	rightItems.clear();
+	leftWeight = 0.f;
+	rightWeight = 0.f;
+
+	leftTargetOffsetY = 0.f;
+	rightTargetOffsetY = 0.f;
+	stickTargetRotation = 0.f;
 }
 
 void Scene3::ResourceLoad()

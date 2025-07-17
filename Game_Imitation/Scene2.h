@@ -3,6 +3,7 @@
 #include "ZoomUI.h"
 #include "SceneUiMgr.h"
 #include "Inventory.h"
+#include "TextGo.h"
 
 class Scene2 : public Scene
 {
@@ -29,6 +30,7 @@ private:
     sf::RectangleShape tvRect;
 
     SceneUiMgr sceneUiMgr;
+    sf::RectangleShape itemBg;
 
     bool isBatteryInserted = false;
 
@@ -36,6 +38,8 @@ private:
     size_t nextItemIndex = 0;
 
     bool isItemInTvVisible = false;
+    std::vector<sf::RectangleShape> itemBgsInTv;
+    std::vector<TextGo*> itemLabels;
 
     std::string itemName;
     std::string textureName;

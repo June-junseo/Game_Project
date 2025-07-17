@@ -20,6 +20,7 @@ public:
 private:
     void ResourceLoad();
     void SetUpViews();
+    void ScaleReset();
 
     std::string texId3 = "graphics/scene3_bg.png";
     sf::Sprite background3;
