@@ -194,7 +194,9 @@ void Scene2::Update(float dt)
 				}
 			}
 		}
-		Inventory::Instance().HandleClick(mousePos);
+		if (tvUi.IsVisible()) {
+			Inventory::Instance().HandleClick(mousePos);
+		}
 	}
 }
 

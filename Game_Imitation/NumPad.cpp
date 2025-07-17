@@ -69,11 +69,12 @@ void NumPad::Update(float dt)
     {
         sf::Vector2i rawMousePos = InputMgr::GetMousePosition();
         sf::Vector2f mappedMousePos = FRAMEWORK.GetWindow().mapPixelToCoords(rawMousePos);
-
+     
         for (size_t i = 0; i < buttons.size(); ++i)
         {
             if (buttons[i].getGlobalBounds().contains(mappedMousePos))
             {
+
                 buttons[i].setFillColor(sf::Color(255, 100, 0));
                 pressedIndex = static_cast<int>(i);
                 pressClock.restart();

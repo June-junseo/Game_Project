@@ -8,321 +8,317 @@
 #include "Scene3.h"
 
 Scene3::Scene3()
-	:Scene(SceneIds::Scene3)
+    : Scene(SceneIds::Scene3)
 {
 }
 
 void Scene3::Init()
 {
-	Inventory::Instance().Init();
-	ResourceLoad();
-	TEXTURE_MGR.Load(texIds);
-	sf::Vector2f windowSize = FRAMEWORK.GetWindowSizeF();
-	uiView.setSize(windowSize);
-	uiView.setCenter(windowSize * 0.5f);
+    Inventory::Instance().Init();
+    ResourceLoad();
+    TEXTURE_MGR.Load(texIds);
 
-	background3.setPosition(0.f, 0.f);
-	background3.setTexture(TEXTURE_MGR.Get(texId3), true);
+    sf::Vector2f windowSize = FRAMEWORK.GetWindowSizeF();
+    uiView.setSize(windowSize);
+    uiView.setCenter(windowSize * 0.5f);
 
-	sf::Vector2f center = windowSize * 0.5f;
-	sf::Vector2f scaleSize(600.f, 600.f);
-	sf::FloatRect scaleArea(center.x - scaleSize.x * 0.5f - 200, center.y - scaleSize.y * 0.5f + 150, scaleSize.x, scaleSize.y);
-	scaleUi.Init(TEXTURE_MGR.Get("graphics/scale_ui.png"), center);
-	scaleUi.SetClickableArea(scaleArea);
+    background3.setPosition(0.f, 0.f);
+    background3.setTexture(TEXTURE_MGR.Get(texId3), true);
 
-	sceneUiMgr.Init(FRAMEWORK.GetWindow(), windowSize);
-	sceneUiMgr.CreateArrowButtons(windowSize);
+    sf::Vector2f center = windowSize * 0.5f;
+    sf::Vector2f scaleSize(600.f, 600.f);
+    sf::FloatRect scaleArea(center.x - scaleSize.x * 0.5f - 200, center.y - scaleSize.y * 0.5f + 150, scaleSize.x, scaleSize.y);
+    scaleUi.Init(TEXTURE_MGR.Get("graphics/scale_ui.png"), center);
+    scaleUi.SetClickableArea(scaleArea);
 
-	ArrowButton* leftArrow = sceneUiMgr.GetLeftArrow();
-	ArrowButton* rightArrow = sceneUiMgr.GetRightArrow();
-	sceneUiMgr.AddArrowButtons(leftArrow, rightArrow);
+    sceneUiMgr.Init(FRAMEWORK.GetWindow(), windowSize);
+    sceneUiMgr.CreateArrowButtons(windowSize);
 
-	scaleStick.setTexture(TEXTURE_MGR.Get("graphics/scale_stick.png"));
-	scaleLeft.setTexture(TEXTURE_MGR.Get("graphics/scale_left.png"));
-	scaleRight.setTexture(TEXTURE_MGR.Get("graphics/scale_right.png"));
+    ArrowButton* leftArrow = sceneUiMgr.GetLeftArrow();
+    ArrowButton* rightArrow = sceneUiMgr.GetRightArrow();
+    sceneUiMgr.AddArrowButtons(leftArrow, rightArrow);
 
-	scaleStick.setPosition(center.x - 60 - scaleStick.getGlobalBounds().width * 0.5f, center.y - 100.f);
-	scaleLeft.setPosition(scaleStick.getPosition().x - 150.f, scaleStick.getPosition().y - 60.f);
-	scaleRight.setPosition(scaleStick.getPosition().x - 200.f + scaleStick.getGlobalBounds().width, scaleStick.getPosition().y - 60.f);
+    scaleStick.setTexture(TEXTURE_MGR.Get("graphics/scale_stick.png"));
+    scaleLeft.setTexture(TEXTURE_MGR.Get("graphics/scale_left.png"));
+    scaleRight.setTexture(TEXTURE_MGR.Get("graphics/scale_right.png"));
 
-	isScaleActive = false;
+    scaleStick.setPosition(center.x - 60 - scaleStick.getGlobalBounds().width * 0.5f, center.y - 100.f);
+    scaleLeft.setPosition(scaleStick.getPosition().x - 150.f, scaleStick.getPosition().y - 60.f);
+    scaleRight.setPosition(scaleStick.getPosition().x - 200.f + scaleStick.getGlobalBounds().width, scaleStick.getPosition().y - 60.f);
 
-	leftArrow->SetCallBack([this]() {
-		if (scaleUi.IsVisible())
-			scaleUi.Hide();
-		else
-			SCENE_MGR.ChangeScene(SceneIds::Scene4);
-		});
-	rightArrow->SetCallBack([this]() {
-		if (scaleUi.IsVisible())
-			scaleUi.Hide();
-		else
-			SCENE_MGR.ChangeScene(SceneIds::Scene2);
-		});
+    isScaleActive = false;
 
-	keySprite.setTexture(TEXTURE_MGR.Get("graphics/item_key.png"));
-	keySprite.setScale(2.f, 2.f);
-	keySprite.setOrigin(keySprite.getGlobalBounds().width / 2.f, keySprite.getGlobalBounds().height / 2.f);
-	keySprite.setPosition(windowSize.x * 0.5f - 10.f, windowSize.y * 0.5f + 110.f);
+    leftArrow->SetCallBack([this]() {
+        if (scaleUi.IsVisible())
+            scaleUi.Hide();
+        else
+            SCENE_MGR.ChangeScene(SceneIds::Scene4);
+        });
 
-	Scene::Init();
+    rightArrow->SetCallBack([this]() {
+        if (scaleUi.IsVisible())
+            scaleUi.Hide();
+        else
+            SCENE_MGR.ChangeScene(SceneIds::Scene2);
+        });
+
+    keySprite.setTexture(TEXTURE_MGR.Get("graphics/item_key.png"));
+    keySprite.setScale(2.f, 2.f);
+    keySprite.setOrigin(keySprite.getGlobalBounds().width / 2.f, keySprite.getGlobalBounds().height / 2.f);
+    keySprite.setPosition(windowSize.x * 0.5f - 10.f, windowSize.y * 0.5f + 110.f);
+
+    Scene::Init();
 }
 
 void Scene3::Enter()
 {
-	Scene::Enter();
-	ResourceLoad();
-	TEXTURE_MGR.Load(texIds);
-	background3.setTexture(TEXTURE_MGR.Get(texId3), true);
+    Scene::Enter();
+    SetUpViews();  
 }
 
 void Scene3::Exit()
 {
-	Scene::Exit();
+    Scene::Exit();
 }
 
 void Scene3::Update(float dt)
 {
-	Scene::Update(dt);
-	sceneUiMgr.Update(dt);
+    Scene::Update(dt);
+    sceneUiMgr.Update(dt);
 
-	if (isResetPending && !puzzleSolved)
-	{
-		resetTimer += dt;
-		if (resetTimer >= 1.0f)
-		{
-			ScaleReset();
-			isResetPending = false;
-			resetTimer = 0.f;
-		}
-	}
+    if (isResetPending && !puzzleSolved)
+    {
+        resetTimer += dt;
+        if (resetTimer >= 1.0f)
+        {
+            ScaleReset();
+            isResetPending = false;
+            resetTimer = 0.f;
+        }
+    }
 
-	sf::Vector2f mousePos = FRAMEWORK.GetWindow().mapPixelToCoords(InputMgr::GetMousePosition(), uiView);
+    sf::Vector2f mousePos = FRAMEWORK.GetWindow().mapPixelToCoords(InputMgr::GetMousePosition(), uiView);
 
-	if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
-	{
-		if (scaleUi.CheckClick(mousePos))
-		{
-			isScaleActive = true;
-			scaleUi.Show();
-			return;
-		}
+    if (InputMgr::GetMouseButtonDown(sf::Mouse::Left))
+    {
+        if (scaleUi.CheckClick(mousePos))
+        {
+            isScaleActive = true;
+            scaleUi.Show();
+            return;
+        }
 
-		if (isScaleActive)
-		{
-			Item* selectedItem = Inventory::Instance().GetSelectedItem();
-			if (selectedItem)
-			{
-				sf::Sprite scaleLeftClickable = scaleLeft;
-				sf::Sprite scaleRightClickable = scaleRight;
+        if (isScaleActive)
+        {
+            Item* selectedItem = Inventory::Instance().GetSelectedItem();
+            if (selectedItem)
+            {
+                sf::Sprite scaleLeftClickable = scaleLeft;
+                sf::Sprite scaleRightClickable = scaleRight;
 
-				scaleLeftClickable.setOrigin(scaleLeftClickable.getLocalBounds().width * 0.5f,
-					scaleLeftClickable.getLocalBounds().height * 0.5f);
-				scaleLeftClickable.setPosition(scaleLeft.getPosition().x + scaleLeft.getGlobalBounds().width * 0.5f,
-					scaleLeft.getPosition().y + scaleLeft.getGlobalBounds().height * 0.5f);
-				scaleLeftClickable.setScale(2.f, 2.f);
+                scaleLeftClickable.setOrigin(scaleLeftClickable.getLocalBounds().width * 0.5f,
+                    scaleLeftClickable.getLocalBounds().height * 0.5f);
+                scaleLeftClickable.setPosition(scaleLeft.getPosition().x + scaleLeft.getGlobalBounds().width * 0.5f,
+                    scaleLeft.getPosition().y + scaleLeft.getGlobalBounds().height * 0.5f);
+                scaleLeftClickable.setScale(2.f, 2.f);
 
-				scaleRightClickable.setOrigin(scaleRightClickable.getLocalBounds().width * 0.5f,
-					scaleRightClickable.getLocalBounds().height * 0.5f);
-				scaleRightClickable.setPosition(scaleRight.getPosition().x + scaleRight.getGlobalBounds().width * 0.5f,
-					scaleRight.getPosition().y + scaleRight.getGlobalBounds().height * 0.5f);
-				scaleRightClickable.setScale(2.f, 2.f);
+                scaleRightClickable.setOrigin(scaleRightClickable.getLocalBounds().width * 0.5f,
+                    scaleRightClickable.getLocalBounds().height * 0.5f);
+                scaleRightClickable.setPosition(scaleRight.getPosition().x + scaleRight.getGlobalBounds().width * 0.5f,
+                    scaleRight.getPosition().y + scaleRight.getGlobalBounds().height * 0.5f);
+                scaleRightClickable.setScale(2.f, 2.f);
 
-				if (scaleLeftClickable.getGlobalBounds().contains(mousePos))
-				{
-					AddItemToScale(selectedItem, true);
-					Inventory::Instance().RemoveSelectedItem();
-				}
-				else if (scaleRightClickable.getGlobalBounds().contains(mousePos))
-				{
-					AddItemToScale(selectedItem, false);
-					Inventory::Instance().RemoveSelectedItem();
-				}
-			}
-		}
+                if (scaleLeftClickable.getGlobalBounds().contains(mousePos))
+                {
+                    AddItemToScale(selectedItem, true);
+                    Inventory::Instance().RemoveSelectedItem();
+                }
+                else if (scaleRightClickable.getGlobalBounds().contains(mousePos))
+                {
+                    AddItemToScale(selectedItem, false);
+                    Inventory::Instance().RemoveSelectedItem();
+                }
+            }
+        }
 
-		if (!isKeyCollected && puzzleSolved)
-		{
-			SetUpViews();
-			if (keySprite.getGlobalBounds().contains(mousePos))
-			{
-				std::cout << "Key clicked!" << std::endl;
-				if (!Inventory::Instance().HasItem("key"))
-				{
-					Item* keyItem = new Item("key", "graphics/item_key.png");
-					keyItem->Init();
-					Inventory::Instance().AddItem(keyItem);
-				}
-				isKeyCollected = true;
-			}
-		}
-		Inventory::Instance().HandleClick(mousePos);
-	}
+        if (!isKeyCollected && puzzleSolved)
+        {
+            SetUpViews();
+            if (keySprite.getGlobalBounds().contains(mousePos))
+            {
+                std::cout << "Key clicked!" << std::endl;
+                if (!Inventory::Instance().HasItem("key"))
+                {
+                    Item* keyItem = new Item("key", "graphics/item_key.png");
+                    keyItem->Init();
+                    Inventory::Instance().AddItem(keyItem);
+                }
+                isKeyCollected = true;
+            }
+        }
 
-	float interpSpeed = 6.f;
-	stickCurrentRotation += (stickTargetRotation - stickCurrentRotation) * dt * interpSpeed;
-	leftCurrentOffsetY += (leftTargetOffsetY - leftCurrentOffsetY) * dt * interpSpeed;
-	rightCurrentOffsetY += (rightTargetOffsetY - rightCurrentOffsetY) * dt * interpSpeed;
+        Inventory::Instance().HandleClick(mousePos);
+    }
 
-	scaleStick.setRotation(stickCurrentRotation);
-	scaleLeft.setPosition(scaleStick.getPosition().x - 150.f, scaleStick.getPosition().y - 60.f + leftCurrentOffsetY);
-	scaleRight.setPosition(scaleStick.getPosition().x - 200.f + scaleStick.getGlobalBounds().width, scaleStick.getPosition().y - 60.f + rightCurrentOffsetY);
+    float interpSpeed = 6.f;
+    stickCurrentRotation += (stickTargetRotation - stickCurrentRotation) * dt * interpSpeed;
+    leftCurrentOffsetY += (leftTargetOffsetY - leftCurrentOffsetY) * dt * interpSpeed;
+    rightCurrentOffsetY += (rightTargetOffsetY - rightCurrentOffsetY) * dt * interpSpeed;
+
+    scaleStick.setRotation(stickCurrentRotation);
+    scaleLeft.setPosition(scaleStick.getPosition().x - 150.f, scaleStick.getPosition().y - 60.f + leftCurrentOffsetY);
+    scaleRight.setPosition(scaleStick.getPosition().x - 200.f + scaleStick.getGlobalBounds().width, scaleStick.getPosition().y - 60.f + rightCurrentOffsetY);
 }
 
 void Scene3::AddItemToScale(Item* item, bool toLeft)
 {
+    Item* selectedItemBeforeRemove = Inventory::Instance().GetSelectedItem();
 
-	Item* selectedItemBeforeRemove = Inventory::Instance().GetSelectedItem();
+    Inventory::Instance().RemoveSelectedItem();
 
-	Inventory::Instance().RemoveSelectedItem();
+    float weight = 0.f;
 
-	float weight = 0.f;
+    if (item->GetName() == "beer") weight = 1.0f;
+    else if (item->GetName() == "clock") weight = 3.5f;
+    else if (item->GetName() == "drug") weight = 1.5f;
+    else if (item->GetName() == "phone") weight = 4.0f;
 
-	if (item->GetName() == "beer") weight = 1.0f;
-	else if (item->GetName() == "clock") weight = 3.5f;
-	else if (item->GetName() == "drug") weight = 1.5f;
-	else if (item->GetName() == "phone") weight = 4.0f;
+    if (toLeft)
+    {
+        leftItems.push_back(item);
+        leftWeight += weight;
+        leftTargetOffsetY = Utils::Clamp(-15.f * leftItems.size(), -30.f, 30.f);
+    }
+    else
+    {
+        rightItems.push_back(item);
+        rightWeight += weight;
+        rightTargetOffsetY = Utils::Clamp(15.f * rightItems.size(), -30.f, 30.f);
+    }
 
-	if (toLeft)
-	{
-		leftItems.push_back(item);
-		leftWeight += weight;
-		leftTargetOffsetY = Utils::Clamp(-15.f * leftItems.size(), -30.f, 30.f);
-	}
-	else
-	{
-		rightItems.push_back(item);
-		rightWeight += weight;
-		rightTargetOffsetY = Utils::Clamp(15.f * rightItems.size(), -30.f, 30.f);
-	}
-	CheckPuzzleSolved();
+    CheckPuzzleSolved();
 }
 
 void Scene3::CheckPuzzleSolved()
 {
-	float diff = rightWeight - leftWeight;
+    float diff = rightWeight - leftWeight;
 
-	stickTargetRotation = Utils::Clamp(diff * 3.f, -10.f, 10.f);
-	leftTargetOffsetY = Utils::Clamp(diff * -70.f, -30.f, 70.f);
-	rightTargetOffsetY = Utils::Clamp(diff * 70.f, -30.f, 70.f);
+    stickTargetRotation = Utils::Clamp(diff * 3.f, -10.f, 10.f);
+    leftTargetOffsetY = Utils::Clamp(diff * -70.f, -30.f, 70.f);
+    rightTargetOffsetY = Utils::Clamp(diff * 70.f, -30.f, 70.f);
 
-	if (std::abs(leftWeight - rightWeight) < 0.01f && !puzzleSolved)
-	{
-		puzzleSolved = true;
-		isResetPending = false;   
-		resetTimer = 0.f;
-		std::cout << "clear!" << std::endl;
-	}
-	else if (!puzzleSolved)
-	{
-		if (Inventory::Instance().GetTotalItemsCount() == 0 && !isResetPending)
-		{
-			isResetPending = true;
-			resetTimer = 0.f;
-			
-		}
-	}
+    if (std::abs(leftWeight - rightWeight) < 0.01f && !puzzleSolved)
+    {
+        puzzleSolved = true;
+        isResetPending = false;
+        resetTimer = 0.f;
+        std::cout << "clear!" << std::endl;
+    }
+    else if (!puzzleSolved)
+    {
+        if (Inventory::Instance().GetTotalItemsCount() == 0 && !isResetPending)
+        {
+            isResetPending = true;
+            resetTimer = 0.f;
+        }
+    }
 }
 
 void Scene3::HandleEvent(const sf::Event& event)
 {
-	sceneUiMgr.HandleEvent(event, FRAMEWORK.GetWindow());
+    sceneUiMgr.HandleEvent(event, FRAMEWORK.GetWindow());
 }
-
 
 void Scene3::Draw(sf::RenderWindow& window)
 {
-	window.setView(uiView);
-	window.draw(background3);
-	scaleUi.Draw(window);
+    window.setView(uiView);
+    window.draw(background3);
+    scaleUi.Draw(window);
 
-	window.draw(scaleRect);
+    window.draw(scaleRect);
 
-	if (!isScaleActive || scaleUi.IsVisible())
-		scaleUi.Draw(window);
+    if (isScaleActive && scaleUi.IsVisible())
+    {
+        window.draw(scaleStick);
+        window.draw(scaleLeft);
+        window.draw(scaleRight);
 
-	if (isScaleActive && scaleUi.IsVisible())
-	{
-		window.draw(scaleStick);
-		window.draw(scaleLeft);
-		window.draw(scaleRight);
+        window.draw(leftDebugRect);
+        window.draw(rightDebugRect);
 
-		window.draw(leftDebugRect);
-		window.draw(rightDebugRect);
+        for (size_t i = 0; i < leftItems.size(); ++i)
+        {
+            if (leftItems[i])
+            {
+                float baseX = scaleLeft.getPosition().x + 50.f;
+                float baseY = scaleLeft.getPosition().y - 100.f;
+                leftItems[i]->SetPosition({ baseX + static_cast<float>(i) * 60.f, baseY });
+                leftItems[i]->Draw(window);
+            }
+        }
 
-		for (size_t i = 0; i < leftItems.size(); ++i)
-		{
-			if (leftItems[i])
-			{
-				float baseX = scaleLeft.getPosition().x + 50.f;
-				float baseY = scaleLeft.getPosition().y - 100.f;
-				leftItems[i]->SetPosition({ baseX + static_cast<float>(i) * 60.f, baseY });
-				leftItems[i]->Draw(window);
-			}
-		}
+        for (size_t i = 0; i < rightItems.size(); ++i)
+        {
+            if (rightItems[i])
+            {
+                float baseX = scaleRight.getPosition().x + 50.f;
+                float baseY = scaleRight.getPosition().y - 100.f;
+                rightItems[i]->SetPosition({ baseX + static_cast<float>(i) * 60.f, baseY });
+                rightItems[i]->Draw(window);
+            }
+        }
 
-		for (size_t i = 0; i < rightItems.size(); ++i)
-		{
-			if (rightItems[i])
-			{
-				float baseX = scaleRight.getPosition().x + 50.f;
-				float baseY = scaleRight.getPosition().y - 100.f;
-				rightItems[i]->SetPosition({ baseX + static_cast<float>(i) * 60.f, baseY });
-				rightItems[i]->Draw(window);
-			}
-		}
+        if (!isKeyCollected && puzzleSolved)
+            window.draw(keySprite);
+    }
 
-		if (!isKeyCollected && puzzleSolved)
-			window.draw(keySprite);
-	}
-
-	sceneUiMgr.Draw(window);
+    sceneUiMgr.Draw(window);
 }
 
 void Scene3::SetUpViews()
 {
-	sf::Vector2f windowSize = FRAMEWORK.GetWindowSizeF();
-	background3.setTexture(TEXTURE_MGR.Get(texId3), true);
-	uiView.setSize(windowSize);
-	uiView.setCenter(windowSize * 0.5f);
+    sf::Vector2f windowSize = FRAMEWORK.GetWindowSizeF();
+    background3.setTexture(TEXTURE_MGR.Get(texId3), true);
+    uiView.setSize(windowSize);
+    uiView.setCenter(windowSize * 0.5f);
 }
 
 void Scene3::ScaleReset()
 {
-	for (Item* item : leftItems)
-	{
-		if (item)
-		{
-			Inventory::Instance().AddItem(item);
-		}
-	}
-	for (Item* item : rightItems)
-	{
-		if (item)
-		{
-			Inventory::Instance().AddItem(item);
-		}
-	}
+    for (Item* item : leftItems)
+    {
+        if (item)
+        {
+            Inventory::Instance().AddItem(item);
+        }
+    }
+    for (Item* item : rightItems)
+    {
+        if (item)
+        {
+            Inventory::Instance().AddItem(item);
+        }
+    }
 
-	leftItems.clear();
-	rightItems.clear();
-	leftWeight = 0.f;
-	rightWeight = 0.f;
+    leftItems.clear();
+    rightItems.clear();
+    leftWeight = 0.f;
+    rightWeight = 0.f;
 
-	leftTargetOffsetY = 0.f;
-	rightTargetOffsetY = 0.f;
-	stickTargetRotation = 0.f;
+    leftTargetOffsetY = 0.f;
+    rightTargetOffsetY = 0.f;
+    stickTargetRotation = 0.f;
 }
 
 void Scene3::ResourceLoad()
 {
-	texIds =
-	{
-		"graphics/scene3_bg.png",
-		"graphics/scale_ui.png",
-		"graphics/scale_stick.png",
-		"graphics/scale_left.png",
-		"graphics/scale_right.png",
-		"graphics/item_key.png"
-	};
+    texIds =
+    {
+        "graphics/scene3_bg.png",
+        "graphics/scale_ui.png",
+        "graphics/scale_stick.png",
+        "graphics/scale_left.png",
+        "graphics/scale_right.png",
+        "graphics/item_key.png"
+    };
 }

@@ -43,6 +43,7 @@ void SpriteGo::SetOrigin(Origins preset)
 
 void SpriteGo::Init()
 {
+	SOUNDBUFFER_MGR.Load("sounds/bgm_main.wav");
 }
 
 void SpriteGo::Release()

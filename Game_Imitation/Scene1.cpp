@@ -113,6 +113,7 @@ void Scene1::Enter()
 void Scene1::Exit()
 {
 	Scene::Exit();
+	SOUND_MGR.Release();
 }
 
 void Scene1::Update(float dt)
@@ -134,14 +135,23 @@ void Scene1::Update(float dt)
 			}
 			isBatteryVisible = false;
 		}
-		if (shelfUi.IsVisible() && albumUi.CheckClick(mousePos)) albumUi.Show();
-		else if (shelfUi.CheckClick(mousePos)) 
-		{ 
-			shelfUi.Show(); boxUi.Hide(); albumUi.Hide(); numPad.SetActive(false); 
+		if (shelfUi.IsVisible() && albumUi.CheckClick(mousePos))
+		{
+			albumUi.Show();
 		}
-		else if (boxUi.CheckClick(mousePos)) 
+		else if (!boxUi.IsVisible() && shelfUi.CheckClick(mousePos)) 
 		{ 
-			boxUi.Show(); shelfUi.Hide(); albumUi.Hide(); numPad.SetActive(true); 
+			shelfUi.Show();
+			boxUi.Hide(); 
+			albumUi.Hide(); 
+			numPad.SetActive(false); 
+		}
+		else if (!shelfUi.IsVisible() && boxUi.CheckClick(mousePos)) 
+		{ 
+			boxUi.Show(); 
+			shelfUi.Hide(); 
+			albumUi.Hide(); 
+            numPad.SetActive(true); 
 		}
 	}
 	blinkTimer += dt;
