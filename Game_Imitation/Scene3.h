@@ -3,6 +3,7 @@
 #include "ZoomUI.h"
 #include "SceneUiMgr.h"
 #include "Inventory.h"
+#include "AniPlayer.h"
 
 class Scene3 : public Scene
 {
@@ -59,7 +60,10 @@ private:
     SceneUiMgr sceneUiMgr;
 
     ZoomUI scaleUi;
+    ZoomUI goddnessUi;
+
     sf::RectangleShape scaleRect;
+    sf::RectangleShape goddnessRect;
 
     sf::FloatRect leftScaleRect;
     sf::FloatRect rightScaleRect;
@@ -76,5 +80,7 @@ private:
 
     bool isKeyCollected = false;
     bool isKeyVisible = false;
+
+    bool isGoddnessClicked = false;
 
 };

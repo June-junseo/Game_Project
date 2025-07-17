@@ -27,9 +27,14 @@ void Scene3::Init()
 
     sf::Vector2f center = windowSize * 0.5f;
     sf::Vector2f scaleSize(600.f, 600.f);
-    sf::FloatRect scaleArea(center.x - scaleSize.x * 0.5f - 200, center.y - scaleSize.y * 0.5f + 150, scaleSize.x, scaleSize.y);
+    sf::FloatRect scaleArea(center.x - scaleSize.x * 0.5f - 400, center.y - scaleSize.y * 0.5f + 150, scaleSize.x, scaleSize.y);
     scaleUi.Init(TEXTURE_MGR.Get("graphics/scale_ui.png"), center);
     scaleUi.SetClickableArea(scaleArea);
+
+    sf::Vector2f goddnessSize(400.f, 400.f);
+    sf::FloatRect goddnessArea(center.x - goddnessSize.x * 0.5f + 200, center.y - goddnessSize.y * 0.5f, goddnessSize.x, goddnessSize.y);
+    goddnessUi.Init(TEXTURE_MGR.Get("graphics/goddness_ui.png"), center);
+    goddnessUi.SetClickableArea(goddnessArea);
 
     sceneUiMgr.Init(FRAMEWORK.GetWindow(), windowSize);
     sceneUiMgr.CreateArrowButtons(windowSize);
@@ -47,19 +52,36 @@ void Scene3::Init()
     scaleRight.setPosition(scaleStick.getPosition().x - 200.f + scaleStick.getGlobalBounds().width, scaleStick.getPosition().y - 60.f);
 
     isScaleActive = false;
-
     leftArrow->SetCallBack([this]() {
         if (scaleUi.IsVisible())
+        {
             scaleUi.Hide();
+            isScaleActive = false;  
+        }
+        else if (goddnessUi.IsVisible())
+        {
+            goddnessUi.Hide();
+        }
         else
+        {
             SCENE_MGR.ChangeScene(SceneIds::Scene4);
+        }
         });
 
     rightArrow->SetCallBack([this]() {
         if (scaleUi.IsVisible())
+        {
             scaleUi.Hide();
+            isScaleActive = false;
+        }
+        else if (goddnessUi.IsVisible())
+        {
+            goddnessUi.Hide();
+        }
         else
+        {
             SCENE_MGR.ChangeScene(SceneIds::Scene2);
+        }
         });
 
     keySprite.setTexture(TEXTURE_MGR.Get("graphics/item_key.png"));
@@ -73,7 +95,7 @@ void Scene3::Init()
 void Scene3::Enter()
 {
     Scene::Enter();
-    SetUpViews();  
+    SetUpViews();
 }
 
 void Scene3::Exit()
@@ -105,9 +127,17 @@ void Scene3::Update(float dt)
         {
             isScaleActive = true;
             scaleUi.Show();
+            goddnessUi.Hide();
             return;
         }
 
+        if (!isScaleActive && goddnessUi.CheckClick(mousePos))
+        {
+            goddnessUi.Show();
+            scaleUi.Hide();
+            isScaleActive = false;
+            return;
+        }
         if (isScaleActive)
         {
             Item* selectedItem = Inventory::Instance().GetSelectedItem();
@@ -234,6 +264,7 @@ void Scene3::Draw(sf::RenderWindow& window)
     window.setView(uiView);
     window.draw(background3);
     scaleUi.Draw(window);
+    goddnessUi.Draw(window);
 
     window.draw(scaleRect);
 
@@ -319,6 +350,7 @@ void Scene3::ResourceLoad()
         "graphics/scale_stick.png",
         "graphics/scale_left.png",
         "graphics/scale_right.png",
-        "graphics/item_key.png"
+        "graphics/item_key.png",
+         "graphics/goddness_ui.png"
     };
 }
