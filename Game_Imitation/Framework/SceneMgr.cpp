@@ -6,12 +6,14 @@
 #include "Scene2.h"
 #include "Scene3.h"
 #include "Scene4.h"
+#include "SceneTitle.h"
 
 void SceneMgr::Init()
 {
 	SOUNDBUFFER_MGR.Load("sounds/numpad_sound.wav");
 	SOUNDBUFFER_MGR.Load("sounds/bgm_main.wav");
 	SOUND_MGR.PlayBgm("sounds/bgm_main.wav", true);
+	scenes.push_back(new SceneTitle());
 	scenes.push_back(new Scene1());
 	scenes.push_back(new Scene2());
 	scenes.push_back(new Scene3());
